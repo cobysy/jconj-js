@@ -1,5 +1,5 @@
 {
-    "name": "conj-js",
+    "name": "jconj-js",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -8,7 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "argparse": "^1.0.10",
         "debug": "^3.1.0",
