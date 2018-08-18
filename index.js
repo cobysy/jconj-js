@@ -378,8 +378,8 @@ function parse_word(args) {
         }
     } else {
         return {
-            kana: args,
-            kanj: args
+            kana: args[1],
+            kanj: args[0]
         }
     }
 }
