@@ -23,7 +23,7 @@ Original Python Script Copyright Notice:
 #######################################################################
 ```
 
-My first piece of JS code. Not properly tested so use at own risk :)
+My first piece of JS/Node code.
 
 Example
 
