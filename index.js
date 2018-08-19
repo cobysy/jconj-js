@@ -33,6 +33,7 @@ const Enumerable = require('linq');
 const scriptName = path.basename(__filename);
 
 // DEBUG=conj-js ./index.js vk 来る
+// DEBUG=conj-js ./index.js vk 来る くる
 // DEBUG=conj-js ./index.js v5r やる
 // DEBUG=conj-js ./index.js vs-i する
 const debug = require('debug')('conj-js');
@@ -59,9 +60,7 @@ try {
 }
 debug('posid: ' + pos);
 
-if (!Enumerable.from(Object.values(ct['conjo'])).select(c => {
-    return c[0];
-}).contains(pos)) {
+if (!Enumerable.from(Object.values(ct['conjo'])).select(c => c[0]).contains(pos)) {
     console.log(`no conjugation data available for part-of-speech: ${args.pos}`);
     console.log(`'${scriptName} --list' will print a list of conjugatable parts-of-speech`);
     process.exit();
@@ -114,8 +113,7 @@ function combine_onums(conjs, ct) {
     const newconjs = {};
     const allnotes = new Set();
     
-    for (const key of Enumerable.from(Object.keys(conjs))
-        .orderBy(k => { return k }).toArray()) {
+    for (const key of Enumerable.from(Object.keys(conjs)).orderBy(k => k).toArray()) {
         const [pos, conj, neg, fml, onum] = key.split(','); // js stores key as text
 
         let txt = conjs[key];
@@ -167,9 +165,7 @@ function conjugate(ktxt, rtxt, pos, ct) {
     debug("rtxt: " + rtxt);
 
     // Get pos number from kw
-    const sorted = Enumerable.from(Object.values(ct['conj'])).orderBy(c => {
-        return c[0];
-    }).toArray();
+    const sorted = Enumerable.from(Object.values(ct['conj'])).orderBy(c => c[0]).toArray();
     
     const negfml = [
         [false, false],
@@ -183,7 +179,6 @@ function conjugate(ktxt, rtxt, pos, ct) {
                 // Python: 
                 //   _, _, _, _, _, stem, okuri, euphr, euphk, _ = \
                 //      ct['conjo'][pos, conj, neg, fml, onum]
-                var stem, okuri, euphr, euphk;
                 var ctAtIdx;
                 try {
                     ctAtIdx = ct['conjo'][[pos, conj, neg, fml, onum]];
@@ -194,10 +189,10 @@ function conjugate(ktxt, rtxt, pos, ct) {
                     break;
                 }
 
-                stem = ctAtIdx[5];
-                okuri = ctAtIdx[6];
-                euphr = ctAtIdx[7];
-                euphk = ctAtIdx[8];
+                const stem = ctAtIdx[5];
+                const okuri = ctAtIdx[6];
+                const euphr = ctAtIdx[7];
+                const euphk = ctAtIdx[8];
                 
                 //debug("stem,okuri,euphr,euphk: " + [stem,okuri,euphr,euphk]);
 
@@ -269,9 +264,8 @@ function print_help(ct) {
     // Get all conjugatable pos id numbers from the main conjugations
     // table, conjo.csv. 
     const poskws = Enumerable.from(Object.values(ct['conjo']))
-        .select(v => {
-            return v[0]; // get the pos id number
-        })
+        // get the pos id number
+        .select(v => v[0])
         .distinct()
         .toArray();
     
@@ -279,12 +273,8 @@ function print_help(ct) {
     // and description text, for all the pos numbers in 'poskws'.  Sort
     // the resulting list by keyword alphabetically.
     const availpos = Enumerable.from(poskws)
-        .select(posid => {
-            return ct['kwpos'][posid];
-        })
-        .orderBy(x => {
-            return x[1];
-        })
+        .select(posid => ct['kwpos'][posid])
+        .orderBy(x => x[1])
         .toArray();
     
     console.log("Conjugatable PoS values:");
@@ -384,10 +374,7 @@ function parse_word(args) {
     debug('args.length: ' + args.length);
     if (args.length == 1) {
         //debug(args[0]);
-        const isKanji = [...args[0]].some(c => {
-            //debug(c.charCodeAt(0));
-            return c.charCodeAt(0) >= 0x4000;
-        });
+        const isKanji = [...args[0]].some(c => c.charCodeAt(0) >= 0x4000);
         debug('isKanji: ' + isKanji);
         if (isKanji) {
             return {
