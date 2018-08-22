@@ -1,5 +1,5 @@
 # jconj-js
-JS port of a table-based Japanese word conjugator (https://github.com/yamagoya/jconj)
+TS/JS port of a table-based Japanese word conjugator (https://github.com/yamagoya/jconj)
 
 ```
 jconv-js Copyright (c) 2018 cobysy
@@ -23,7 +23,7 @@ Original Python Script Copyright Notice:
 #######################################################################
 ```
 
-My first piece of JS/Node code.
+My first piece of TS/JS/Node code.
 
 Example
 
