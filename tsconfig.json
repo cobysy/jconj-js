@@ -8,7 +8,6 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
     "typeRoots": [
       "./node_modules/@types/"
     ],
@@ -17,6 +16,5 @@
   "compileOnSave": true,
   "exclude": [
     "node_modules/*",
-    "**/*-aot.ts"
   ]
 }

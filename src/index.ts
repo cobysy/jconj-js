@@ -49,6 +49,8 @@ debug("args: " + JSON.stringify(args));
 
 
 const ct = read_conj_tables(args.dir);
+// console.log(JSON.stringify(ct));
+// process.exit();
 
 // DEBUG=conj-js ./index.js --list
 if (args.list) {
@@ -89,7 +91,7 @@ print_conjs(conjs, ct);
 function print_conjs(conjs:Record<string,string>, ct:conjtables) {
     // Create a dictionary to map combinations of 'neg' and 'fml' in the
     // 'conjs' dict keys to printable text.
-    const labels = {};
+    const labels: Record<string, string> = {};
     labels[[false, false].toString()] = "aff-plain:  ";
     labels[[false, true].toString()] = "aff-formal: ";
     labels[[true, false].toString()] = "neg-plain:  ";
@@ -117,7 +119,7 @@ function print_conjs(conjs:Record<string,string>, ct:conjtables) {
 // (pos,conj,neg,fml).
 // We also append any relevant note numbers to the text string here.
 function combine_onums(conjs:Record<string, string>, ct:conjtables) {
-    const newconjs = {};
+    const newconjs:Record<string, string> = {};
     const allnotes = new Set();
     
     for (const key of Object.keys(conjs).sort()) {
@@ -166,8 +168,6 @@ function combine_onums(conjs:Record<string, string>, ct:conjtables) {
 //   The value of each item is a string with the combined conjugated
 //   form of 'ktxt' and 'rtxt' for that conjugation.
 function conjugate(ktxt: string, rtxt: string, pos: number, ct: conjtables): Record<string, string> {
-    const conjs = {};
-
     debug("ktxt: " + ktxt);
     debug("rtxt: " + rtxt);
 
@@ -184,6 +184,8 @@ function conjugate(ktxt: string, rtxt: string, pos: number, ct: conjtables): Rec
         [true, false],
         [true, true]];
     
+    const conjs:Record<string,string> = {};
+
     for (const [conj, conjnm] of sorted) {
         for (const [neg, fml] of negfml) {
             for (const onum of range(1, 10)) {

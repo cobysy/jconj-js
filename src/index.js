@@ -12,6 +12,8 @@ const debug = require('debug')('conj-js');
 const args = parse_args();
 debug("args: " + JSON.stringify(args));
 const ct = read_conj_tables(args.dir);
+// console.log(JSON.stringify(ct));
+// process.exit();
 // DEBUG=conj-js ./index.js --list
 if (args.list) {
     print_help(ct);
@@ -114,7 +116,6 @@ function combine_onums(conjs, ct) {
 //   The value of each item is a string with the combined conjugated
 //   form of 'ktxt' and 'rtxt' for that conjugation.
 function conjugate(ktxt, rtxt, pos, ct) {
-    const conjs = {};
     debug("ktxt: " + ktxt);
     debug("rtxt: " + rtxt);
     // Get pos number from kw
@@ -131,6 +132,7 @@ function conjugate(ktxt, rtxt, pos, ct) {
         [true, false],
         [true, true]
     ];
+    const conjs = {};
     for (const [conj, conjnm] of sorted) {
         for (const [neg, fml] of negfml) {
             for (const onum of range(1, 10)) {
