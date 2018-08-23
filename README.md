@@ -94,3 +94,12 @@ Alternative (~tari) neg-plain:   来なかったり【こなかったり】
 Alternative (~tari) neg-formal:  来ませんでしたり【きませんでしたり】
 Continuative (~i) aff-plain:   来【き】
 ```
+
+
+##Gulp builds
+
+Conjugation tables to JSON
+```
+gulp build-conjtables
+```
+

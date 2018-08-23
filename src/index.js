@@ -12,8 +12,10 @@ const debug = require('debug')('conj-js');
 const args = parse_args();
 debug("args: " + JSON.stringify(args));
 const ct = read_conj_tables(args.dir);
-// console.log(JSON.stringify(ct));
-// process.exit();
+if (args.conjtables) {
+    console.log(JSON.stringify(ct));
+    process.exit();
+}
 // DEBUG=conj-js ./index.js --list
 if (args.list) {
     print_help(ct);
@@ -271,10 +273,16 @@ function parse_args(argv = process.argv) {
         action: "help",
         help: "Print this help message."
     });
+    p.addArgument("--conjtables", {
+        action: "storeTrue",
+        defaultValue: false
+    });
     const args = p.parseArgs();
     debug('args: ' + args);
     debug('args.list: ' + args.list);
     if (args.list)
+        return args;
+    if (args.conjtables)
         return args;
     debug('args.pos: ' + args.pos);
     const posMatch = /[a-z0-9-]+$/.test(args.pos);
