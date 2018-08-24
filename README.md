@@ -28,7 +28,7 @@ My first piece of TS/JS/Node code.
 Example
 
 ```
-DEBUG=conj-js ./index.js vk 来る くる
+gulp demo
 ```
 
 Output
@@ -96,7 +96,7 @@ Continuative (~i) aff-plain:   来【き】
 ```
 
 
-##Gulp builds
+## Gulp builds
 
 Conjugation tables to JSON
 ```
