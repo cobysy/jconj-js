@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const cjonj = require("../src");
+const jconj = require("../src");
 const argparse_1 = require("argparse");
 const fs = require("fs");
 const path = require("path");
@@ -39,7 +39,7 @@ if (!Object.values(ct['conjo']).map(c => c[0]).some(x => x == pos)) {
     console.log(`'${scriptName} --list' will print a list of conjugatable parts-of-speech`);
     process.exit();
 }
-const conjs = new cjonj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
+const conjs = new jconj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
 // Display the conjugations.
 print_conjs(conjs, ct);
 // Print the conjugation table returned by combine_onums()
@@ -213,7 +213,7 @@ function read_conj_tables(dir) {
     // ('') strs, sbool() converts text strs "t..." or "f..."
     // to bools.
     const coltypes = {
-        conj: [int, str],
+        'conj': [int, str],
         'conjo': [int, int, sbool, sbool, int, int, str, str, str, xint],
         'conotes': [int, str],
         'conjo_notes': [int, int, sbool, sbool, int, int],

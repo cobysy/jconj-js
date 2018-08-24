@@ -7,7 +7,8 @@ Original Python Script Copyright Notice: Copyright (c) 2014,2018 Stuart McGraw
 */
 
 export type csvtype = 'conj' | 'conjo' | 'conotes' | 'conjo_notes' | 'kwpos';
-export type csvvals = Array<any>;
+export type csvvaltype = string | boolean | number | undefined;
+export type csvvals = Array<csvvaltype>;
 export type conjtableitem = Record<string, csvvals>;
 export type conjtables = Record<csvtype, conjtableitem>;
     
@@ -86,8 +87,8 @@ export class conjugator {
 
         // Get pos number from kw
         const sorted = Object.values(ct['conj']).sort((a, b) => {
-            if (a[0] > b[0]) return 1;
-            if (a[0] < b[0]) return -1;
+            if ((a[0] as number) > (b[0] as number)) return 1;
+            if ((a[0] as number) < (b[0] as number)) return -1;
             return 0;
         });
     
