@@ -3,9 +3,10 @@ const gulp = require('gulp');
 const exec = require('child_process').exec;
 
 gulp.task('build-conjtables', function (cb) {
-    exec('mkdir -p ./build && cd ./src && node index.js --conjtables > ./../build/conj-tables.json', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
+    exec('node ./dist/console/jconj.js --conjtables > ./dist/console/conj-tables.json',
+        (err, stdout, stderr) => {
+            if (stdout) console.log(stdout);
+            if (stderr) console.log(stderr);
+            cb(err);
+        });
 });
