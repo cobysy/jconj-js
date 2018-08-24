@@ -17,7 +17,7 @@ gulp.task("default", () => {
 });
 
 gulp.task('build-conjtables', () => {
-    exec(`node ${folders.dist}/console/jconj.js --conjtables > ./${dist}/console/conj-tables.json`)
+    exec(`node ${folders.dist}/console/jconj.js --conjtables > ${folders.dist}/console/conj-tables.json`)
         .stdout.pipe(process.stdout);
 });
 
