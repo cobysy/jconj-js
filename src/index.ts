@@ -42,7 +42,7 @@ export class conjugator {
             const notes = ct['conjo_notes'][key];
             //console.log(notes);
             if (notes)
-                allnotes.push(...(notes.filter(n => n) as string[]));
+                allnotes.push(...(notes as string[]));
 
             if (notes) {
                 txt += '[' + notes.join(',') + ']';
@@ -88,11 +88,8 @@ export class conjugator {
         //debug("rtxt: " + rtxt);
 
         // Get pos number from kw
-        const sorted = Object.values(ct['conj']).sort((a, b) => {
-            if ((a[0] as number) > (b[0] as number)) return 1;
-            if ((a[0] as number) < (b[0] as number)) return -1;
-            return 0;
-        });
+        const sorted = Object.values(ct['conj'])
+            .sort((a, b) => (a[0] as number) < (b[0] as number) ? -1 : 1);
     
         const negfml = [
             [false, false],

@@ -400,11 +400,7 @@ function print_help(ct:jconj.conjtables) {
     // the resulting list by keyword alphabetically.
     const availpos = poskws
         .map(posid => ct['kwpos'][posid as number])
-        .sort((a, b) => {
-            if ((a[1] as string) > (b[1] as string)) return 1;
-            if ((a[1] as string) < (b[1] as string)) return -1;
-            return 0;
-        });
+        .sort((a, b) => (a[0] as string) < (b[0] as string) ? -1 : 1);
     
     console.log("Conjugatable PoS values:");
     for (const [pos, poskw, descrip] of availpos) {
