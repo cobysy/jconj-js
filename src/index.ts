@@ -13,7 +13,7 @@ export type conjtableitem = Record<string, csvvals>;
 export type conjtables = Record<csvtype, conjtableitem>;
     
 export class conjugator {
-    public conjugate(kanj: string, kana: string, pos: number, ct: conjtables): Record<string, string> {
+    public conjugate(kanj: string, kana: string, pos: number, ct: conjtables): [Record<string, string>, string[]] {
         
         const conjs = this._conjugate(kanj, kana, pos, ct);
 
@@ -21,8 +21,7 @@ export class conjugator {
         // are disinguished by 'onum' in the conjugation key.  The following
         // call will combine these into a single conjugation entry with a text
         // value of the individual conjugations separated by '/' in one string.
-        this.combine_onums(conjs, ct);
-        return conjs;
+        return this.combine_onums(conjs, ct);
     }
 
     // Combine multiple conjugation variant "onum" forms of the same
@@ -32,16 +31,18 @@ export class conjugator {
     // instead of having keys, (pos,conj,neg,fml,onum) the keys are
     // (pos,conj,neg,fml).
     // We also append any relevant note numbers to the text string here.
-    private combine_onums(conjs: Record<string, string>, ct: conjtables) {
+    private combine_onums(conjs: Record<string, string>, ct: conjtables): [Record<string, string>, string[]] {
         const newconjs: Record<string, string> = {};
-        const allnotes = new Set();
+        const allnotes: string[] = [];
     
         for (const key of Object.keys(conjs).sort()) {
             const [pos, conj, neg, fml, onum] = key.split(','); // js stores key as text
 
             let txt = conjs[key];
             const notes = ct['conjo_notes'][key];
-            allnotes.add(notes);
+            //console.log(notes);
+            if (notes)
+                allnotes.push(...(notes.filter(n => n) as string[]));
 
             if (notes) {
                 txt += '[' + notes.join(',') + ']';
@@ -55,7 +56,8 @@ export class conjugator {
                 newconjs[newkey] += ' / ' + txt;
             }
         }
-        return [newconjs, allnotes];
+        const sorteduniquenotes = [...new Set(Object.values(allnotes))].sort();
+        return [newconjs, sorteduniquenotes];
     }
 
     // Generate a dict containing all the conjugated forms of the kanji

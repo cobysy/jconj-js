@@ -47,10 +47,23 @@ if (!Object.values(ct['conjo']).map(c => c[0]).some(x => x == pos)) {
     process.exit();
 }
 
-const conjs = new jconj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
+const [conjs, notes] = new jconj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
 
 // Display the conjugations.
 print_conjs(conjs, ct);
+
+// Display the notes
+print_notes(notes, ct);
+
+function print_notes(notes:string[], ct:jconj.conjtables) {
+    if (notes) {
+        console.log("Notes:");
+        //debug(notes);
+        for (const n of notes) {
+             console.log(`[${n}] -- ${ct['conotes'][n][1]}`);
+        }
+    }
+}
 
 // Print the conjugation table returned by combine_onums()
 function print_conjs(conjs:Record<string,string>, ct:jconj.conjtables) {

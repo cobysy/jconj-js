@@ -22,6 +22,7 @@ gulp.task('build-conjtables', () => {
 });
 
 gulp.task("demo", () => {
-    exec(`node ${folders.dist}//console/jconj.js vk 来る くる`)
-        .stdout.pipe(process.stdout);
+    let x = exec(`node ${folders.dist}//console/jconj.js vk 来る くる`);
+    x.stdout.pipe(process.stdout);
+    x.stderr.pipe(process.stderr);
 });
