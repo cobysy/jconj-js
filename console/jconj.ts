@@ -77,7 +77,7 @@ function print_conjs(conjs:Record<string,string>, ct:jconj.conjtables) {
 
     // Go though all the entries in 'conjs' (each of which is a conjugation)
     // of the given kanji and kana) and print them.
-    for (const key of Object.keys(conjs)) {
+    for (const key of Object.keys(conjs).sort()) {
         const [pos, conj, neg, fml] = key.split(','); // js stores keytext
         const txt = conjs[key];
         
