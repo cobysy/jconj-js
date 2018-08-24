@@ -1,4 +1,4 @@
-import { csvtype, csvvals, conjtables, conjtableitem, conjugator }  from '../src';
+import * as cjonj from '../src';
 
 import { ArgumentParser } from 'argparse';
 import fs = require('fs');
@@ -47,13 +47,13 @@ if (!Object.values(ct['conjo']).map(c => c[0]).some(x => x == pos)) {
     process.exit();
 }
 
-const conjs = new conjugator().conjugate(args.kanj, args.kana, pos, ct);
+const conjs = new cjonj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
 
 // Display the conjugations.
 print_conjs(conjs, ct);
 
 // Print the conjugation table returned by combine_onums()
-function print_conjs(conjs:Record<string,string>, ct:conjtables) {
+function print_conjs(conjs:Record<string,string>, ct:cjonj.conjtables) {
     // Create a dictionary to map combinations of 'neg' and 'fml' in the
     // 'conjs' dict keys to printable text.
     const labels: Record<string, string> = {};
@@ -194,7 +194,7 @@ function parse_word(args:string[]) {
     }
 }
 
-function read_conj_tables(dir: string): conjtables {
+function read_conj_tables(dir: string): cjonj.conjtables {
     // Read the conjugation .csv files located in directory 'dir'.
     // Returned is a dict whose keys are the names of each file sans
     // the .csv part.  Each value is the contents of the corresponding
@@ -235,23 +235,23 @@ function read_conj_tables(dir: string): conjtables {
     // Note that xint() is the same as int() but handles empty
     // ('') strs, sbool() converts text strs "t..." or "f..."
     // to bools.
-    const coltypes: Record<csvtype, csvvalconverters> = {
+    const coltypes: Record<cjonj.csvtype, csvvalconverters> = {
         conj: [int, str],
         'conjo': [int, int, sbool, sbool, int, int, str, str, str, xint],
         'conotes': [int, str],
         'conjo_notes': [int, int, sbool, sbool, int, int],
         'kwpos': [int, str, str],
     }
-    let ct: Partial<conjtables> = {};
+    let ct: Partial<cjonj.conjtables> = {};
     for (const fn in coltypes) {
         const filename = path.join(dir, fn + '.csv');
-        const csvtbl = readcsv(filename, coltypes[fn as csvtype], fn != 'kwpos');
+        const csvtbl = readcsv(filename, coltypes[fn as cjonj.csvtype], fn != 'kwpos');
         if (fn == 'conjo') {
             // Handle conjo.csv specially: add each row to its dict under
             // the key of a 5-tuple of the first five row values.  These
             // (pos,conj,new,fml,onum) identify the okurigana and other
             // data needed for a specific conjugation.
-            const ctitem: conjtableitem = {};
+            const ctitem: cjonj.conjtableitem = {};
             for (const row of csvtbl) {
                 ctitem[row.slice(0, 5).toString()] = row;
             }
@@ -266,7 +266,7 @@ function read_conj_tables(dir: string): conjtables {
             // a row, we use one where each value is a list of note
             // numbers for that conjugation.
             // @cobysy-18aug17: where are currently no entries w/ multiple note numbers 
-            const ctitem: conjtableitem= {};
+            const ctitem: cjonj.conjtableitem= {};
             for (const row of csvtbl) {
                 const key = row.slice(0, 5).toString();
                 const lst = ctitem[key] || [];
@@ -278,7 +278,7 @@ function read_conj_tables(dir: string): conjtables {
         else {
             // For all other csv files, add the row to the dict with a key
             // of the first column which is an id number.
-            const ctitem: conjtableitem = {};
+            const ctitem: cjonj.conjtableitem = {};
             for (const row of csvtbl) {
                 ctitem[row[0]] = row;
             }
@@ -292,7 +292,7 @@ function read_conj_tables(dir: string): conjtables {
                     ctitem[row[1]] = row;
                 }
             }
-            ct[fn as csvtype] = ctitem;
+            ct[fn as cjonj.csvtype] = ctitem;
 
             // if (fn == 'kwpos') {
             //     console.log(dict[1]);
@@ -301,7 +301,7 @@ function read_conj_tables(dir: string): conjtables {
         }
     }
 
-    return ct as conjtables;
+    return ct as cjonj.conjtables;
 }
 
 function readcsv(filename: string, coltypes: csvvalconverters, hasHeader: boolean) {
@@ -333,7 +333,7 @@ function readcsv(filename: string, coltypes: csvvalconverters, hasHeader: boolea
         reader.shift(); // Skip header row.
     }
 
-    let table: Array<csvvals> = [];
+    let table: Array<cjonj.csvvals> = [];
     for (const row of reader) {
         // Apply a conversion function from 'coltypes'
         // to convert each datum read from the file (as
@@ -375,7 +375,7 @@ function int(arg: string): number {
 
 // Print a list of the art-of-speech keywords for pos' that this
 // program can conjugate.
-function print_help(ct:conjtables) {
+function print_help(ct:cjonj.conjtables) {
     // Get all conjugatable pos id numbers from the main conjugations
     // table, conjo.csv. 
     const poskws = [...new Set(Object.values(ct['conjo'])

@@ -1,14 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const src_1 = require("../src");
+const cjonj = require("../src");
 const argparse_1 = require("argparse");
 const fs = require("fs");
 const path = require("path");
 const scriptName = path.basename(__filename);
-// DEBUG=conj-js ./index.js vk 来る
-// DEBUG=conj-js ./index.js vk 来る くる
-// DEBUG=conj-js ./index.js v5r やる
-// DEBUG=conj-js ./index.js vs-i する
+// DEBUG=conj-js node ./dist/demo/jconj.js vk 来る
+// DEBUG=conj-js node ./dist/demo/jconj.js vk 来る くる
+// DEBUG=conj-js node ./dist/demo/jconj.js v5r やる
+// DEBUG=conj-js node ./dist/demo/jconj.js vs-i する
+// DEBUG=conj-js node ./dist/demo/jconj.js vk 来る くる
 const debug = require('debug')('conj-js');
 const args = parse_args();
 debug("args: " + JSON.stringify(args));
@@ -17,7 +18,7 @@ if (args.conjtables) {
     console.log(JSON.stringify(ct));
     process.exit();
 }
-// DEBUG=conj-js ./index.js --list
+// DEBUG=conj-js node ./dist/demo/jconj.js --list
 if (args.list) {
     print_help(ct);
     process.exit();
@@ -38,7 +39,7 @@ if (!Object.values(ct['conjo']).map(c => c[0]).some(x => x == pos)) {
     console.log(`'${scriptName} --list' will print a list of conjugatable parts-of-speech`);
     process.exit();
 }
-const conjs = new src_1.conjugator().conjugate(args.kanj, args.kana, pos, ct);
+const conjs = new cjonj.conjugator().conjugate(args.kanj, args.kana, pos, ct);
 // Display the conjugations.
 print_conjs(conjs, ct);
 // Print the conjugation table returned by combine_onums()
