@@ -1,5 +1,12 @@
 <template>
-    <b-table :data="tableData" :columns="columns"></b-table>
+    <b-table 
+        :data="tableData" 
+        :columns="columns"
+        :narrowed="true"
+        :mobile-cards="false">
+        <template slot-scope="props" slot="header">
+        </template>
+    </b-table>
 </template>
 
 <script lang="ts">
@@ -15,7 +22,6 @@ export default class VsResults extends Vue {
   private columns = [
                     {
                         field: 'name',
-                        label: 'Conj',
                     },
                 ];
 

@@ -197,8 +197,6 @@ export class conjugator {
     }
 }
 
-// export{}
-
 declare global {
     interface Array<T> {
         sortBy(selector: (elem: T) => any): T[];
