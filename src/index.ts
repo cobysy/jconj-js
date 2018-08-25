@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*
 jconv-ts Copyright (c) 2018 cobysy
 
