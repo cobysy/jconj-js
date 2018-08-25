@@ -89,7 +89,8 @@ export class conjugator {
 
         // Get pos number from kw
         const sorted = Object.values(ct['conj'])
-            .sort((a, b) => (a[0] as number) < (b[0] as number) ? -1 : 1);
+            .sortBy(x => x[0]);
+            //.sort((a, b) => (a[0] as number) < (b[0] as number) ? -1 : 1);
     
         const negfml = [
             [false, false],
@@ -190,5 +191,19 @@ export class conjugator {
         for (let i = begin; i < end; i += interval) {
             yield i;
         }
+    }
+}
+
+//export{}
+
+declare global {
+    interface Array<T> {
+        sortBy(selector: (elem: T) => any): T[];
+    }
+}
+
+if (!Array.prototype.sortBy) {
+    Array.prototype.sortBy = function <T>(selector: (elem: T) => any): T[] {
+        return this.sort((a, b) => selector(a) < selector(b) ? -1 : 1);
     }
 }
