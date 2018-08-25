@@ -12,10 +12,11 @@ type csvvalconverters = Array<(data: string) => jconj.csvvaltype>;
 // DEBUG=conj-js node ./dist/demo/jconj.js v5r やる
 // DEBUG=conj-js node ./dist/demo/jconj.js vs-i する
 // DEBUG=conj-js node ./dist/demo/jconj.js vk 来る くる
+// tslint:disable-next-line:no-var-requires
 const debug = require('debug')('conj-js');
 
 const args = parse_args();
-debug("args: " + JSON.stringify(args));
+debug('args: ' + JSON.stringify(args));
 
 const ct = read_conj_tables(args.dir);
 
@@ -31,8 +32,9 @@ if (args.list) {
 }
 
 // Convert the given pos keyword into pos id number.
-let pos!:number;
+let pos!: number;
 try {
+    // tslint:disable-next-line:no-string-literal
     pos = ct['kwpos'][args.pos][0] as number;
 } catch (error) {
     console.log(`unknown part-of-speech: ${args.pos}`);
@@ -41,7 +43,8 @@ try {
 }
 debug('posid: ' + pos);
 
-if (!Object.values(ct['conjo']).map(c => c[0]).some(x => x == pos)) {
+// tslint:disable-next-line:no-string-literal
+if (!Object.values(ct['conjo']).map((c) => c[0]).some((x) => x === pos)) {
     console.log(`no conjugation data available for part-of-speech: ${args.pos}`);
     console.log(`'${scriptName} --list' will print a list of conjugatable parts-of-speech`);
     process.exit();
@@ -55,35 +58,40 @@ print_conjs(conjs, ct);
 // Display the notes
 print_notes(notes, ct);
 
-function print_notes(notes:string[], ct:jconj.conjtables) {
+// tslint:disable-next-line:no-shadowed-variable
+function print_notes(notes: string[], ct: jconj.conjtables) {
     if (notes) {
-        console.log("Notes:");
-        //debug(notes);
+        console.log('Notes:');
+        // debug(notes);
         for (const n of notes) {
-             console.log(`[${n}] -- ${ct['conotes'][n][1]}`);
+            // tslint:disable-next-line:no-string-literal
+            console.log(`[${n}] -- ${ct['conotes'][n][1]}`);
         }
     }
 }
 
 // Print the conjugation table returned by combine_onums()
-function print_conjs(conjs:Record<string,string>, ct:jconj.conjtables) {
+// tslint:disable-next-line:no-shadowed-variable
+function print_conjs(conjs: Record<string, string>, ct: jconj.conjtables) {
     // Create a dictionary to map combinations of 'neg' and 'fml' in the
     // 'conjs' dict keys to printable text.
     const labels: Record<string, string> = {};
-    labels[[false, false].toString()] = "aff-plain:  ";
-    labels[[false, true].toString()] = "aff-formal: ";
-    labels[[true, false].toString()] = "neg-plain:  ";
-    labels[[true, true].toString()] = "neg-formal: ";
+    labels[[false, false].toString()] = 'aff-plain:  ';
+    labels[[false, true].toString()] = 'aff-formal: ';
+    labels[[true, false].toString()] = 'neg-plain:  ';
+    labels[[true, true].toString()] = 'neg-formal: ';
 
     // Go though all the entries in 'conjs' (each of which is a conjugation)
     // of the given kanji and kana) and print them.
     for (const key of Object.keys(conjs).sort()) {
+        // tslint:disable-next-line:no-shadowed-variable
         const [pos, conj, neg, fml] = key.split(','); // js stores keytext
         const txt = conjs[key];
-        
+
         // Get the conjugation description from the conjugation
         // number 'conj'.
-        const conjdescr = ct['conj'][conj][1]
+        // tslint:disable-next-line:no-string-literal
+        const conjdescr = ct['conj'][conj][1];
         const label = labels[[neg, fml].toString()];
         console.log(`${conjdescr} ${label} ${txt}`);
     }
@@ -92,70 +100,74 @@ function print_conjs(conjs:Record<string,string>, ct:jconj.conjtables) {
 // Parse command line, use --help for info.
 // read the conjugation .csv files into a single data structure.
 // See read_conj_tables() for description of 'ct's structure.
-function parse_args(argv:string[] = process.argv) {
+function parse_args(argv: string[] = process.argv) {
     const p = new ArgumentParser({
         addHelp: false,
-        description: scriptName + " will print a list of the conjugated forms " +
-            "of the Japanese word given by the kanji and/or kana words " +
-            "given in the ARGS argument(s).  POS is a part-of-speech " +
-            "code as used in wwwjdic, JMdict, etc ('v1', 'v5k', " +
-            "'adj-i', etc.)"
+        description: scriptName + ' will print a list of the conjugated forms ' +
+            'of the Japanese word given by the kanji and/or kana words ' +
+            'given in the ARGS argument(s).  POS is a part-of-speech ' +
+            'code as used in wwwjdic, JMdict, etc (\'v1\', \'v5k\', ' +
+            '\'adj-i\', etc.)',
     });
-    p.addArgument("pos", {
+    p.addArgument('pos', {
         nargs: '?',
-        help: "Part-of-speech code word as used in wwjdic, JMdict, etc.  " +
-            +"Run program with \"--list\" to get list of valid pos values."
+        help: 'Part-of-speech code word as used in wwjdic, JMdict, etc.  ' +
+            +'Run program with "--list" to get list of valid pos values.',
     });
-    p.addArgument("word", {
+    p.addArgument('word', {
         nargs: '*',
-        help: "Word to be conjugated.  Either or both kanji or kana " +
-            +"forms may be given.  If both are given, both will be " +
-            +"conjugated, and the program will look for kanji in one " +
-            +"to determine which is which."
+        help: 'Word to be conjugated.  Either or both kanji or kana ' +
+            +'forms may be given.  If both are given, both will be ' +
+            +'conjugated, and the program will look for kanji in one ' +
+            +'to determine which is which.',
     });
-    p.addArgument("--list", {
-        action: "storeTrue",
+    p.addArgument('--list', {
+        action: 'storeTrue',
         defaultValue: false,
-        help: "Print list of valid pos values to stdout and exit."
+        help: 'Print list of valid pos values to stdout and exit.',
     });
-    p.addArgument(["-d", "--dir"], {
+    p.addArgument(['-d', '--dir'], {
         defaultValue: './data',
-        help: "Directory where the conjugation csv data files are kept."
+        help: 'Directory where the conjugation csv data files are kept.',
     });
-    p.addArgument("--help", {
-        action: "help",
-        help: "Print this help message."
+    p.addArgument('--help', {
+        action: 'help',
+        help: 'Print this help message.',
     });
-    p.addArgument("--conjtables", {
-        action: "storeTrue",
-        defaultValue: false
+    p.addArgument('--conjtables', {
+        action: 'storeTrue',
+        defaultValue: false,
     });
-    
+
+    // tslint:disable-next-line:no-shadowed-variable
     const args = p.parseArgs();
 
     debug('args: ' + args);
     debug('args.list: ' + args.list);
-    if (args.list)
+    if (args.list) {
         return args;
-    if (args.conjtables)
+    }
+    if (args.conjtables) {
         return args;
-    
+    }
+
     debug('args.pos: ' + args.pos);
     const posMatch = /[a-z0-9-]+$/.test(args.pos);
     debug('posMatch: ' + posMatch);
-    if (args.pos != null && !posMatch)
-        p.error("Argument 'pos' is required if --list not given.");
+    if (args.pos != null && !posMatch) {
+        p.error('Argument \'pos\' is required if --list not given.');
+    }
 
     // The shell won't distinguish args separated by jp space characters
     // as seperate.  But users will frequently enter jp space characters
     // to separate kanji and reading because it is pain to switch back
     // to ascii for one character.  So we split them here.
-    let words = [];
+    const words = [];
     debug('args.word(1): ' + args.word);
     for (const w of args.word) {
-        //debug('w: ' + w);
-        let ws = w.split(/\s+/);
-        //debug('ws:' + ws);
+        // debug('w: ' + w);
+        const ws = w.split(/\s+/);
+        // debug('ws:' + ws);
         words.push(...ws); // expand ws to it's elements
     }
 
@@ -163,47 +175,49 @@ function parse_args(argv:string[] = process.argv) {
     debug('args.word(2): ' + args.word);
 
     debug('args.word.length: ' + args.word.length);
-    if (!(1 <= args.word.length && args.word.length <= 2))
-        p.error("You must give one or two words to conjugate")
+    if (!(1 <= args.word.length && args.word.length <= 2)) {
+        p.error('You must give one or two words to conjugate');
+    }
 
     const pw = parse_word(args.word);
     args.kanj = pw.kanj;
     args.kana = pw.kana;
 
-    //debug('args.kanj: ' + args.kanj);
-    //debug('args.kana: ' + args.kana);
-    //debug(JSON.stringify(args));
+    // debug('args.kanj: ' + args.kanj);
+    // debug('args.kana: ' + args.kana);
+    // debug(JSON.stringify(args));
 
     return args;
 }
 
-function parse_word(args:string[]) {
+// tslint:disable-next-line:no-shadowed-variable
+function parse_word(args: string[]) {
     // args' is a list of one or two strs that are the kanji, kana
     // arguments from the command line.  If two, we take them to be in the
     // order kanji, kana.  But if one, it could be either kanji or kana
     // and we identify which by looking for any kanji character (>=0x4000)
     // in it.  We return separate kanji and kana strs accordingly.
     debug('args.length: ' + args.length);
-    if (args.length == 1) {
-        //debug(args[0]);
-        const isKanji = [...args[0]].some(c => c.charCodeAt(0) >= 0x4000);
+    if (args.length === 1) {
+        // debug(args[0]);
+        const isKanji = [...args[0]].some((c) => c.charCodeAt(0) >= 0x4000);
         debug('isKanji: ' + isKanji);
         if (isKanji) {
             return {
                 kanj: args[0],
-                kana: null
-            }
+                kana: null,
+            };
         } else {
             return {
                 kana: args[0],
-                kanj: null
-            }
+                kanj: null,
+            };
         }
     } else {
         return {
             kana: args[1],
-            kanj: args[0]
-        }
+            kanj: args[0],
+        };
     }
 }
 
@@ -249,17 +263,19 @@ function read_conj_tables(dir: string): jconj.conjtables {
     // ('') strs, sbool() converts text strs "t..." or "f..."
     // to bools.
     const coltypes: Record<jconj.csvtype, csvvalconverters> = {
-        'conj': [int, str],
-        'conjo': [int, int, sbool, sbool, int, int, str, str, str, xint],
-        'conotes': [int, str],
-        'conjo_notes': [int, int, sbool, sbool, int, int],
-        'kwpos': [int, str, str],
-    }
-    let ct: Partial<jconj.conjtables> = {};
+        conj: [int, str],
+        conjo: [int, int, sbool, sbool, int, int, str, str, str, xint],
+        conotes: [int, str],
+        conjo_notes: [int, int, sbool, sbool, int, int],
+        kwpos: [int, str, str],
+    };
+    // tslint:disable-next-line:no-shadowed-variable
+    const ct: Partial<jconj.conjtables> = {};
+    // tslint:disable-next-line:forin
     for (const fn in coltypes) {
         const filename = path.join(dir, fn + '.csv');
-        const csvtbl = readcsv(filename, coltypes[fn as jconj.csvtype], fn != 'kwpos');
-        if (fn == 'conjo') {
+        const csvtbl = readcsv(filename, coltypes[fn as jconj.csvtype], fn !== 'kwpos');
+        if (fn === 'conjo') {
             // Handle conjo.csv specially: add each row to its dict under
             // the key of a 5-tuple of the first five row values.  These
             // (pos,conj,new,fml,onum) identify the okurigana and other
@@ -270,16 +286,15 @@ function read_conj_tables(dir: string): jconj.conjtables {
             }
             ct[fn] = ctitem;
 
-            //console.log(dict[[45, 2, false, true, 1]]);
-        }
-        else if (fn == 'conjo_notes') {
+            // console.log(dict[[45, 2, false, true, 1]]);
+        } else if (fn === 'conjo_notes') {
             // conjo_notes maps multiple conjugations (pos,conj,neg,fml,
             // onum) to multiple note numbers.  So instead of using a
             // dictionary keyed by conjugation and where each value is
             // a row, we use one where each value is a list of note
             // numbers for that conjugation.
-            // @cobysy-18aug17: where are currently no entries w/ multiple note numbers 
-            const ctitem: jconj.conjtableitem= {};
+            // @cobysy-18aug17: where are currently no entries w/ multiple note numbers
+            const ctitem: jconj.conjtableitem = {};
             for (const row of csvtbl) {
                 const key = row.slice(0, 5).toString();
                 const lst = ctitem[key] || [];
@@ -287,8 +302,7 @@ function read_conj_tables(dir: string): jconj.conjtables {
                 ctitem[key] = lst;
             }
             ct[fn] = ctitem;
-        }
-        else {
+        } else {
             // For all other csv files, add the row to the dict with a key
             // of the first column which is an id number.
             const ctitem: jconj.conjtableitem = {};
@@ -297,10 +311,10 @@ function read_conj_tables(dir: string): jconj.conjtables {
             }
 
             // Do the same to kwpos.csv but in addition add the same row
-            // with a key of the 2nd column (the kw abbr string.)  This 
+            // with a key of the 2nd column (the kw abbr string.)  This
             // will allow us to look up kwpos records by either id number
             // or keyword string.
-            if (fn == 'kwpos') {
+            if (fn === 'kwpos') {
                 for (const row of csvtbl) {
                     ctitem[row[1] as string] = row;
                 }
@@ -325,28 +339,30 @@ function readcsv(filename: string, coltypes: csvvalconverters, hasHeader: boolea
     // file have headers, the "kwpos.csv" file doesn't.
     // A list of rows, with each row a list of row items by column, is
     // returned.
-    debug("readcsv: " + filename);
+    debug('readcsv: ' + filename);
 
     const raw: string = fs.readFileSync(filename).toString();
-    const reader: Array<Array<string>> = raw.split(/\r?\n/).filter(s => s) // Split lines by newline, skip empty lines
-        .map(s => {
+    const reader: string[][] = raw.split(/\r?\n/).filter((s) => s) // Split lines by newline, skip empty lines
+        .map((s) => {
             // Split columns by tab
-            return s.split(/\t/).map(s => {
+            // tslint:disable-next-line:no-shadowed-variable
+            return s.split(/\t/).map((s) => {
                 // Unescape double quotes
-                if (s.match(/^"|"$/))
+                if (s.match(/^"|"$/)) {
                     return s.replace(/^"|"$/g, '').replace('""', '"');
-                else
+                } else {
                     return s;
+                }
             });
         });
 
-    //console.log(reader);
+    // console.log(reader);
 
     if (hasHeader) {
         reader.shift(); // Skip header row.
     }
 
-    let table: Array<jconj.csvvals> = [];
+    const table: jconj.csvvals[] = [];
     for (const row of reader) {
         // Apply a conversion function from 'coltypes'
         // to convert each datum read from the file (as
@@ -364,21 +380,21 @@ function readcsv(filename: string, coltypes: csvvalconverters, hasHeader: boolea
 
 // Convert a str to a bool.
 function sbool(arg: string): boolean {
-    if (arg.match(/f/)) return false;
-    if (arg.match(/t/)) return true;
-    throw 'ValueError: ' + arg
+    if (arg.match(/f/)) { return false; }
+    if (arg.match(/t/)) { return true; }
+    throw new Error('ValueError: ' + arg);
 }
 
 // Convert a str to an int or to undefined if blank.
 function xint(arg: string): number | undefined {
-    if (!arg) return undefined;
+    if (!arg) { return undefined; }
     const n = int(arg);
-    if (n) return n;
+    if (n) { return n; }
     return undefined;
 }
 
 function str(arg: string): string | undefined {
-    if (!arg) return undefined;
+    if (!arg) { return undefined; }
     return String(arg);
 }
 
@@ -388,22 +404,26 @@ function int(arg: string): number {
 
 // Print a list of the art-of-speech keywords for pos' that this
 // program can conjugate.
-function print_help(ct:jconj.conjtables) {
+// tslint:disable-next-line:no-shadowed-variable
+function print_help(ct: jconj.conjtables) {
     // Get all conjugatable pos id numbers from the main conjugations
-    // table, conjo.csv. 
+    // table, conjo.csv.
+    // tslint:disable-next-line:no-string-literal
     const poskws = [...new Set(Object.values(ct['conjo'])
         // get posid
-        .map(v => v[0]))];
-            
+        .map((v) => v[0]))];
+
     // Get a list of kwpos rows (each containing a pos id number, keyword
     // and description text, for all the pos numbers in 'poskws'.  Sort
     // the resulting list by keyword alphabetically.
     const availpos = poskws
-        .map(posid => ct['kwpos'][posid as number])
-        .sortBy(x => x[1]);
-        //.sort((a, b) => (a[1] as string) < (b[1] as string) ? -1 : 1);
-    
-    console.log("Conjugatable PoS values:");
+        // tslint:disable-next-line:no-string-literal
+        .map((posid) => ct['kwpos'][posid as number])
+        .sortBy((x) => x[1]);
+        // .sort((a, b) => (a[1] as string) < (b[1] as string) ? -1 : 1);
+
+    console.log('Conjugatable PoS values:');
+    // tslint:disable-next-line:no-shadowed-variable
     for (const [pos, poskw, descrip] of availpos) {
         console.log(`${poskw}\t${descrip}`);
     }

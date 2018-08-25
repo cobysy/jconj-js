@@ -8,13 +8,14 @@ Original Python Script Copyright Notice: Copyright (c) 2014,2018 Stuart McGraw
 
 export type csvtype = 'conj' | 'conjo' | 'conotes' | 'conjo_notes' | 'kwpos';
 export type csvvaltype = string | boolean | number | undefined;
-export type csvvals = Array<csvvaltype>;
+export type csvvals = csvvaltype[];
 export type conjtableitem = Record<string, csvvals>;
 export type conjtables = Record<csvtype, conjtableitem>;
-    
+
+// tslint:disable-next-line:class-name
 export class conjugator {
     public conjugate(kanj: string, kana: string, pos: number, ct: conjtables): [Record<string, string>, string[]] {
-        
+
         const conjs = this._conjugate(kanj, kana, pos, ct);
 
         // Some conjugations have multiple forms (e.g. ~なくて and ~ないで) that
@@ -34,15 +35,17 @@ export class conjugator {
     private combine_onums(conjs: Record<string, string>, ct: conjtables): [Record<string, string>, string[]] {
         const newconjs: Record<string, string> = {};
         const allnotes: string[] = [];
-    
+
         for (const key of Object.keys(conjs).sort()) {
             const [pos, conj, neg, fml, onum] = key.split(','); // js stores key as text
 
             let txt = conjs[key];
+            // tslint:disable-next-line:no-string-literal
             const notes = ct['conjo_notes'][key];
-            //console.log(notes);
-            if (notes)
+            // console.log(notes);
+            if (notes) {
                 allnotes.push(...(notes as string[]));
+            }
 
             if (notes) {
                 txt += '[' + notes.join(',') + ']';
@@ -51,8 +54,7 @@ export class conjugator {
             const newkey = [pos, conj, neg, fml].toString();
             if (!newconjs[newkey]) {
                 newconjs[newkey] = txt;
-            }
-            else {
+            } else {
                 newconjs[newkey] += ' / ' + txt;
             }
         }
@@ -84,30 +86,32 @@ export class conjugator {
     //   The value of each item is a string with the combined conjugated
     //   form of 'ktxt' and 'rtxt' for that conjugation.
     private _conjugate(ktxt: string, rtxt: string, pos: number, ct: conjtables): Record<string, string> {
-        //debug("ktxt: " + ktxt);
-        //debug("rtxt: " + rtxt);
+        // debug("ktxt: " + ktxt);
+        // debug("rtxt: " + rtxt);
 
         // Get pos number from kw
+        // tslint:disable-next-line:no-string-literal
         const sorted = Object.values(ct['conj'])
-            .sortBy(x => x[0]);
-            //.sort((a, b) => (a[0] as number) < (b[0] as number) ? -1 : 1);
-    
+            .sortBy((x) => x[0]);
+            // .sort((a, b) => (a[0] as number) < (b[0] as number) ? -1 : 1);
+
         const negfml = [
             [false, false],
             [false, true],
             [true, false],
             [true, true]];
-    
+
         const conjs: Record<string, string> = {};
 
         for (const [conj, conjnm] of sorted) {
             for (const [neg, fml] of negfml) {
                 for (const onum of this.range(1, 10)) {
-                    // Python: 
+                    // Python:
                     //   _, _, _, _, _, stem, okuri, euphr, euphk, _ = \
                     //      ct['conjo'][pos, conj, neg, fml, onum]
-                    var ctAtIdx;
+                    let ctAtIdx;
                     try {
+                        // tslint:disable-next-line:no-string-literal
                         ctAtIdx = ct['conjo'][[pos, conj, neg, fml, onum].toString()];
                     } catch (error) {
                         break;
@@ -120,10 +124,11 @@ export class conjugator {
                     const okuri = ctAtIdx[6] as string;
                     const euphr = ctAtIdx[7] as string;
                     const euphk = ctAtIdx[8] as string;
-                
-                    //debug("stem,okuri,euphr,euphk: " + [stem,okuri,euphr,euphk]);
 
-                    var kt, rt;
+                    // debug("stem,okuri,euphr,euphk: " + [stem,okuri,euphr,euphk]);
+
+                    let kt;
+                    let rt;
                     if (ktxt) {
                         kt = this.construct(ktxt, stem, okuri, euphr, euphk);
                     } else {
@@ -135,17 +140,16 @@ export class conjugator {
                         rt = '';
                     }
 
-                    var txt;
+                    let txt;
                     if (kt && rt) {
-                        txt = (kt + '【' + rt + '】')
-                    }
-                    else {
+                        txt = (kt + '【' + rt + '】');
+                    } else {
                         txt = kt || rt;
-                    };
+                    }
 
                     conjs[[pos, conj, neg, fml, onum].toString()] = txt;
 
-                    //debug("conjugate: " + txt);
+                    // debug("conjugate: " + txt);
                 }
             }
         }
@@ -161,22 +165,23 @@ export class conjugator {
     // last character.  Finally, 'okuri' is appended.
     private construct(txt: string, stem: number, okuri: string, euphr: string, euphk: string) {
         if (txt.length < 2) {
-            throw 'ValueError: Conjugatable words must be at least 2 characters long';
+            throw new Error('ValueError: Conjugatable words must be at least 2 characters long');
         }
 
-        //debug("txt: " + txt);
-   
+        // debug("txt: " + txt);
+
         const checkchar = txt[txt.length - 2][0];
-   
+
         const iskana = (checkchar >= 'あ'
             && checkchar <= 'ん');
-        //debug('iskana: ' + iskana);
- 
-        if (iskana && euphr || !iskana && euphk)
+        // debug('iskana: ' + iskana);
+
+        if (iskana && euphr || !iskana && euphk) {
             stem += 1;
-    
-        //debug('stem:' + stem);
-        var ret;
+        }
+
+        // debug('stem:' + stem);
+        let ret;
         if (iskana) {
             ret = txt.substring(0, txt.length - stem) + (euphr || '') + (okuri || '');
         } else {
@@ -194,7 +199,7 @@ export class conjugator {
     }
 }
 
-//export{}
+// export{}
 
 declare global {
     interface Array<T> {
@@ -205,5 +210,5 @@ declare global {
 if (!Array.prototype.sortBy) {
     Array.prototype.sortBy = function <T>(selector: (elem: T) => any): T[] {
         return this.sort((a, b) => selector(a) < selector(b) ? -1 : 1);
-    }
+    };
 }
