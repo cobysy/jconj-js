@@ -3,6 +3,7 @@ import App from './App.vue';
 
 import Buefy from 'buefy';
 import 'buefy/lib/buefy.css';
+import './styles/bulma.scss';
 
 import jconjPlugin from './plugins/jconj';
 

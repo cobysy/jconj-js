@@ -11,9 +11,15 @@
                     {{ option[1] }} {{ option[2] }}
                 </option>
             </b-select>
-            <p class="control">
-                <button class="button is-primary" @click="search()">Conjugate</button>
-            </p>
+            <button class="button is-primary is-rounded" @click="search()">Conjugate</button>
+
+            <a
+                href="https://github.com/cobysy/jconj-js"
+                target="_blank"
+                title="Github">
+                <b-icon icon="github-circle" size="is-medium"
+                style="vertical-align: text-top" />
+            </a>
         </b-field>
     </section>
 </template>
