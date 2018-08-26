@@ -2,7 +2,8 @@
 module.exports = {
     // options...
     baseUrl: process.env.NODE_ENV === 'production'
-        ? '/jconj/'
+        // ? '/jconj/'
+        ? '/'
         : '/',
     
     configureWebpack: config => {
